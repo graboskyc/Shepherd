@@ -1,8 +1,53 @@
 ﻿@page "/"
 @page "/home"
+@using System.Security.Claims;
 
 <PageTitle>Home - Codename Shepherd</PageTitle>
 
-<h1>Home</h1>
+<AuthorizeView>
+    <Authorized>   
+       <h1>Getting Started</h1>
+       <h2>Welcome, @UI.Name, how should we begin?</h2>
+       
+        <div class="grid">
+          <div>
+            <article>
+                <header>Tasks</header>
+                <p>Create a task-based signup</p>
+                <p>Think about "what is everyone bringing to the party"</p>
+                <p><a role="button" href="/Manage/TaskBasedEdit">Get Started</a></p>
+                <p><a role="button" href="/Manage/TaskBasedList">See Your Existing</a></p>
+            </article>
+          </div>
+          <div>
+            <article>
+                <header>Dates & Times</header>
+                <p>Create a time-based signup</p>
+                <p>Think about "who is covering which volunteer shift"</p>
+                <p><a role="button" href="#">Coming Soon</a></p>
+            </article>
+          </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Codename Shepherd</h1>
 
-Welcome to your new app.
+        <p>I'm tired of Signup Genius and it's 1998 tech stack</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    private UserInfo UI = new UserInfo();
+
+    protected override async Task OnInitializedAsync()  {
+
+      if (authenticationState is not null) {
+        var state = await authenticationState;
+        UI.Name = state?.User?.Identity?.Name ?? string.Empty;
+        UI.Email = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        UI.UserId = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+      }
+    }
+}

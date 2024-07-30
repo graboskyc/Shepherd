@@ -6,8 +6,15 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Shepherd.Data {
     [BsonIgnoreExtraElements]
     public class HerdingList {
-        [BsonElement("Id")]
-        public ObjectIDGenerator _id {get;set;}
+        [BsonElement("_id")]
+        public ObjectId Id {get;set;}
+
+        [BsonElement("name")]
+        public string Name {get;set;}
+
+        [BsonElement("ownedBy")]
+        public string OwnedBy {get;set;}
+
 
     }
 }

@@ -5,6 +5,7 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication; 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Components.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,6 +67,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

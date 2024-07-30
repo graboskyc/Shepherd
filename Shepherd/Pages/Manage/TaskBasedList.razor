@@ -1,0 +1,48 @@
+﻿@page "/Manage/TaskBasedList"
+@using System.Security.Claims;
+@using MongoDB.Bson;
+@using MongoDB.Driver;
+@using Shepherd.Data;
+@inject IMongoCollection<HerdingList> HLCollection;
+@inject NavigationManager Navigation;
+
+<PageTitle>Task Based - Codename Shepherd</PageTitle>
+
+<AuthorizeView>
+    <Authorized>   
+       <h1>Getting Started</h1>
+       <p><a role="button" href="/Manage/TaskBasedEdit">Create New</a></p>
+        @if(_hlList != null) {
+          <ul>
+            @foreach(var hl in _hlList) {
+              <li><a href="/Manage/TaskBasedEdit/@hl.Id.ToString()">@hl.Name</a></li>
+            }
+          </ul>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <h1>Codename Shepherd</h1>
+
+        <p>You must sign in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    private UserInfo UI = new UserInfo();
+    private List<HerdingList> _hlList = null;
+
+    protected override async Task OnInitializedAsync()  {
+
+      if (authenticationState is not null) {
+        var state = await authenticationState;
+        UI.Name = state?.User?.Identity?.Name ?? string.Empty;
+        UI.Email = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        UI.UserId = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+      }
+
+      FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("ownedBy", UI.UserId);
+      _hlList = await HLCollection.Find(filter).ToListAsync();
+    }
+}
