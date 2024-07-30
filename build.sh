@@ -2,7 +2,7 @@
 
 echo
 echo "+================================"
-echo "| START: Shepard"
+echo "| START: Shepherd"
 echo "+================================"
 echo
 
@@ -16,7 +16,7 @@ echo "Using key string ${MASTERENCKEYASBASE64}"
 echo 
 echo "Building container using tag ${abbrvhash}"
 echo
-docker build -t graboskyc/shepard:latest -t graboskyc/shepard:${abbrvhash} --platform=linux/amd64 .
+docker build -t graboskyc/shepherd:latest -t graboskyc/shepherd:${abbrvhash} --platform=linux/amd64 .
 
 EXITCODE=$?
 
@@ -26,13 +26,13 @@ if [ $EXITCODE -eq 0 ]
     echo 
     echo "Starting container"
     echo
-    docker stop shepard
-    docker rm shepard
-    docker run -t -i -d -p 8000:8000 --name shepard -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" --restart unless-stopped graboskyc/shepard:${abbrvhash}
+    docker stop shepherd
+    docker rm shepherd
+    docker run -t -i -d -p 8000:8000 --name shepherd -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" --restart unless-stopped graboskyc/shepherd:${abbrvhash}
 
     echo
     echo "+================================"
-    echo "| END:  Shepard"
+    echo "| END:  Shepherd"
     echo "+================================"
     echo
 else
