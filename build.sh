@@ -7,6 +7,7 @@ echo "+================================"
 echo
 
 source .env
+cd Shepherd
 
 datehash=`date | md5sum | cut -d" " -f1`
 abbrvhash=${datehash: -8}
@@ -28,7 +29,7 @@ if [ $EXITCODE -eq 0 ]
     echo
     docker stop shepherd
     docker rm shepherd
-    docker run -t -i -d -p 8000:8000 --name shepherd -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" --restart unless-stopped graboskyc/shepherd:${abbrvhash}
+    docker run -t -i -d -p 8000:80 --name shepherd -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" --restart unless-stopped graboskyc/shepherd:${abbrvhash}
 
     echo
     echo "+================================"

@@ -1,6 +1,0 @@
-fastapi
-uvicorn
-pymongo[encryption,srv]
-dnspython
-requests
-jinja2
