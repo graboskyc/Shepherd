@@ -1,26 +1,56 @@
-﻿<nav hx-boost="true">
+﻿<nav>
       <ul>
         <li><img height="32" src="/img/icon.png" style="height: 32px !important;" /></li>
       </ul>
-      <ul>
-        <li>
-            <NavLink href="/home" Match="NavLinkMatch.All">
-                Home
-            </NavLink>
-        </li>
-        <li>
-            <NavLink href="/about">
-                About
-            </NavLink>
-        </li>
-        <li>
-            <NavLink href="/pricing">
-                Pricing
-            </NavLink>
-        </li>
-      </ul>
+      <AuthorizeView>
+        <Authorized>   
+            <ul>
+                <li>
+                    <NavLink href="/Account/Logout">
+                        Log Out @Username
+                    </NavLink>
+                </li>
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+            <ul>
+                <li>
+                    <NavLink href="/Home" Match="NavLinkMatch.All">
+                        Home
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="/About">
+                        About
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="/Pricing">
+                        Pricing
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="/Account/Login">
+                        Log In
+                    </NavLink>
+                </li>
+            </ul>
+        </NotAuthorized>
+    </AuthorizeView>
+      
 </nav>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    private string Username = "";
 
+    protected override async Task OnInitializedAsync()  {
+
+      if (authenticationState is not null) {
+        var state = await authenticationState;
+
+        Username = state?.User?.Identity?.Name ?? string.Empty;
+      }
+    }
 }
