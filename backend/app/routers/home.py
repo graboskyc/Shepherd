@@ -14,3 +14,7 @@ async def index(request: Request):
 @router.get("/about", response_class=HTMLResponse)
 async def about(request: Request):
     return templates.TemplateResponse(request=request, name="home/about.html")
+
+@router.get("/pricing", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse(request=request, name="home/pricing.html")
