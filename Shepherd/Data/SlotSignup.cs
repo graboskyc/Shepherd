@@ -9,9 +9,13 @@ namespace Shepherd.Data {
     public class SlotSignup {
 
         [BsonElement("whoId")]
-        public string WhoId {get;set;}
+        public string WhoId {get;set;} = "";
         
         [BsonElement("whoName")]
-        public string WhoName {get;set;}
+        public string WhoName {get;set;} = "";
+        [BsonElement("whoEmail")]
+        public string WhoEmail {get;set;} = "";
+        [BsonElement("when")]
+        public DateTime When {get;set;} = DateTime.Now;
     }
 }

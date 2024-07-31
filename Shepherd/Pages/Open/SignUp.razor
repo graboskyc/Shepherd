@@ -1,0 +1,119 @@
+@page "/Signup/{Id}"
+@using System.Security.Claims;
+@using MongoDB.Bson;
+@using MongoDB.Driver;
+@using Shepherd.Data;
+@inject IMongoCollection<HerdingList> HLCollection;
+@inject NavigationManager Navigation;
+@using Microsoft.FluentUI.AspNetCore.Components;
+
+<PageTitle>Signup - Codename Shepherd</PageTitle>
+
+  
+@if(hl != null) {
+    <h1>@hl.Name</h1>
+    <h2><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</h2>
+    <h2><FluentIcon Value="@(new Icons.Regular.Size20.Location())" /> @hl.Location</h2>
+    <p><i>@hl.Description</i></p>
+
+    <article>
+    <header>Signup Slots</header>
+
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </thead>
+            <tbody>
+                @foreach(var slot in hl.Slots) {
+                    <tr>
+                        <td>@slot.Name</td>
+                        <td>
+                            <span>@slot.SignUps.Count</span>
+                            <span> / </span>
+                            <span>@slot.Quantity</span>
+                        </td>
+                        <td>
+                            @if(@slot.SignUps.Count < @slot.Quantity) {
+                                <button @onclick="(() =>OpenSignup(slot))">Signup</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </article>
+
+} else {
+    <p>Invalid Link</p>
+}
+
+@if(displayModal) {
+    @if(selectedSlot != null) {
+        <dialog open>
+            <article>
+                <header>
+                    <button aria-label="Close" @onclick="CloseSignup"></button>
+                    <p>
+                        <strong>Registering for <i>@selectedSlot.Name</i></strong>
+                    </p>
+                </header>
+                <EditForm Model="signup">
+                    <label>Your Name</label>
+                    <input type="text" @bind="signup.WhoName" />
+
+                    <label>Your Email</label>
+                    <input type="email" @bind="signup.WhoEmail" name="email" placeholder="Email" aria-label="Email" autocomplete="email">
+                </EditForm>
+                <footer>
+                    <button @onclick="Signup">Sign Up</button>
+                </footer>
+            </article>
+        </dialog>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string Id {get;set;} = null;
+
+    private HerdingList hl = null;
+    private bool displayModal = false;
+    private SlotSignup signup = new SlotSignup();
+    private HerdingListSlot selectedSlot = null;
+
+    protected override async Task OnInitializedAsync()  {
+
+        FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
+        var hls = await HLCollection.Find(filter).ToListAsync();
+        hl = hls.FirstOrDefault();
+    
+    }
+
+    private void OpenSignup(HerdingListSlot slot) {
+        selectedSlot = slot;
+        displayModal = true;
+    }
+
+    private void CloseSignup() {
+        displayModal = false;
+    }
+
+    private async Task Signup() {
+        FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
+
+        var update = Builders<HerdingList>.Update.Push("slots.$[s]", signup);
+        var arrayFilter = new[] {
+            new BsonDocumentArrayFilterDefinition<BsonDocument> (
+                new BsonDocument("s._id",
+                    new BsonDocument("$eq", selectedSlot.Id)
+                )
+            )
+        };
+
+        await HLCollection.UpdateOneAsync(filter, update, new UpdateOptions{ArrayFilters = arrayFilter});
+    }
+
+}

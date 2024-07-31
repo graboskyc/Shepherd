@@ -27,6 +27,8 @@ namespace Shepherd.Data {
 
         [BsonElement("eventDT")]
         public DateTime EventDT {get;set;} = DateTime.Now.AddDays(7);
+        [BsonElement("endSignupsDT")]
+        public DateTime EndSignupsDT {get;set;} = DateTime.Now.AddDays(7);
 
         [BsonElement("isPublished")]
         public bool IsPublished {get;set;} = false;
