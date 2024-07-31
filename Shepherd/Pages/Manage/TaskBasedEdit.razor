@@ -11,14 +11,65 @@
 
 <AuthorizeView Context="Auth">
     <Authorized>   
-      <h1>Getting Started</h1>
       @if(hl != null) {
         <EditForm Model="hl">
-          <label>Name</label>
-          <input type="text" @bind="hl.Name" />
+          <h1>Edit <i>@hl.Name</i></h1>
 
-          <button type="submit" @onclick="Submit">Save</button>
+          <article>
+            <header>Basic Information</header>
+
+            <label>Name</label>
+            <input type="text" @bind="hl.Name" />
+
+            <label>Description</label>
+            <InputTextArea @bind-Value="@hl.Description" rows="3"></InputTextArea>
+
+            <label>Location</label>
+            <input type="text" @bind="hl.Location" />
+
+            <label>Event Date and Time</label>
+            <input type="datetime-local" name="datetime-local" aria-label="Datetime local" @bind="hl.EventDT">
+
+            <label>
+              <input @bind="@hl.IsPublished" type="checkbox" role="switch" />
+              Published
+            </label>
+          </article>
+
+          <article>
+            <header>Slots</header>
+
+            @foreach(var slot in hl.Slots) {
+              <article>
+                <header></header>
+
+                <label>Name</label>
+                <input type="text" @bind="slot.Name" />
+
+                <label>Quantity</label>
+                <input @bind="slot.Quantity" type="number" name="number" placeholder="Number" aria-label="Number">
+              
+                <footer>
+                  <button class="contrast" @onclick="(() => DelSlot(slot))">
+                    Delete Slot
+                  </button>
+                </footer>
+              </article>
+            }
+
+            <footer>
+              <button @onclick="AddSlot">Add Slot</button>
+            </footer>
+          </article>
+
+          <article>
+            <header>Finish</header>
+            <button type="submit" @onclick="Submit">Save</button>
+          </article>
+
         </EditForm>
+      } else {
+        <span aria-busy="true">Loading...</span>
       }
     </Authorized>
     <NotAuthorized>
@@ -61,7 +112,18 @@
     }
 
     private async Task Submit() {
+      hl.ModifiedDT = DateTime.Now;
       FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
       await HLCollection.ReplaceOneAsync(filter, hl);
+    }
+
+    private void AddSlot() {
+      var s = new HerdingListSlot();
+      hl.Slots.Add(s);
+    }
+
+    private void DelSlot(HerdingListSlot s) {
+      hl.Slots.RemoveAll(slot => slot.Id == s.Id);
+      StateHasChanged();
     }
 }

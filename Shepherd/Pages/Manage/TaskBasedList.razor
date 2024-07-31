@@ -5,6 +5,7 @@
 @using Shepherd.Data;
 @inject IMongoCollection<HerdingList> HLCollection;
 @inject NavigationManager Navigation;
+@using Microsoft.FluentUI.AspNetCore.Components;
 
 <PageTitle>Task Based - Codename Shepherd</PageTitle>
 
@@ -13,11 +14,21 @@
        <h1>Getting Started</h1>
        <p><a role="button" href="/Manage/TaskBasedEdit">Create New</a></p>
         @if(_hlList != null) {
-          <ul>
             @foreach(var hl in _hlList) {
-              <li><a href="/Manage/TaskBasedEdit/@hl.Id.ToString()">@hl.Name</a></li>
+              <article>
+                <header></header>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.AnimalCat())" /> @hl.Name</p>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</p>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.AppsList())" /> @hl.Slots.Count items</p>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.People())" /> signups</p>
+                @if(hl.IsPublished) {
+                  <p><FluentIcon Value="@(new Icons.Regular.Size20.CheckboxChecked())" /> published</p>
+                } else {
+                  <p><FluentIcon Value="@(new Icons.Regular.Size20.BorderNone())" /> unpublished</p>
+                }
+                <p><a role="button" class="outline" href="/Manage/TaskBasedEdit/@hl.Id.ToString()">Edit</a></p>
+              </article>
             }
-          </ul>
         }
     </Authorized>
     <NotAuthorized>
