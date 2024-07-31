@@ -53,11 +53,12 @@
     @if(selectedSlot != null) {
         <dialog open>
             <article>
-                <header>
-                    <button aria-label="Close" @onclick="CloseSignup"></button>
-                    <p>
+                <header style="overflow: auto;">
+                    <p style="float: left;">
                         <strong>Registering for <i>@selectedSlot.Name</i></strong>
                     </p>
+                    
+                    <button @onclick="CloseSignup" style="float: right;">X</button>
                 </header>
                 <EditForm Model="signup">
                     <label>Your Name</label>
@@ -67,7 +68,11 @@
                     <input type="email" @bind="signup.WhoEmail" name="email" placeholder="Email" aria-label="Email" autocomplete="email">
                 </EditForm>
                 <footer>
-                    <button @onclick="Signup">Sign Up</button>
+                    @if(isSigningUp) {
+                        <button disabled aria-busy="true">Signing you up...</button>
+                    } else {
+                        <button @onclick="Signup">Sign Up</button>
+                    }
                 </footer>
             </article>
         </dialog>
@@ -80,16 +85,18 @@
     public string Id {get;set;} = null;
 
     private HerdingList hl = null;
-    private bool displayModal = false;
+    private bool displayModal, isSigningUp = false;
     private SlotSignup signup = new SlotSignup();
     private HerdingListSlot selectedSlot = null;
 
     protected override async Task OnInitializedAsync()  {
+        await Refresh();    
+    }
 
+    private async Task Refresh() {
         FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
         var hls = await HLCollection.Find(filter).ToListAsync();
         hl = hls.FirstOrDefault();
-    
     }
 
     private void OpenSignup(HerdingListSlot slot) {
@@ -102,9 +109,10 @@
     }
 
     private async Task Signup() {
+        isSigningUp = true;
         FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
 
-        var update = Builders<HerdingList>.Update.Push("slots.$[s]", signup);
+        var update = Builders<HerdingList>.Update.Push("slots.$[s].signups", signup);
         var arrayFilter = new[] {
             new BsonDocumentArrayFilterDefinition<BsonDocument> (
                 new BsonDocument("s._id",
@@ -114,6 +122,9 @@
         };
 
         await HLCollection.UpdateOneAsync(filter, update, new UpdateOptions{ArrayFilters = arrayFilter});
+        await Refresh();
+        displayModal = false;
+        isSigningUp = false;
     }
 
 }
