@@ -14,8 +14,6 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /App
 COPY --from=build-env /App/out .
-RUN mkdir /var/keys
-EXPOSE 80
-EXPOSE 443
-ENV ASPNETCORE_URLS=http://*:80
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://*:8080
 ENTRYPOINT ["dotnet", "Shepherd.dll"]

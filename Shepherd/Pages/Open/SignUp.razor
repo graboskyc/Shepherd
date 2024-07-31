@@ -37,6 +37,8 @@
                         <td>
                             @if(@slot.SignUps.Count < @slot.Quantity) {
                                 <button @onclick="(() =>OpenSignup(slot))">Signup</button>
+                            } else {
+                                <span>Complete!</span>
                             }
                         </td>
                     </tr>

@@ -30,7 +30,7 @@ if [ $EXITCODE -eq 0 ]
     echo
     docker stop shepherd
     docker rm shepherd
-    docker run -t -i -d -p 8000:80 --name shepherd -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" -e "AUTH0DOMAIN=${AUTH0DOMAIN}" -e "AUTH0CLIENTID=${AUTH0CLIENTID}" --restart unless-stopped graboskyc/shepherd:${abbrvhash}
+    docker run -t -i -d -p 8000:8080 --name shepherd -e "MDBCONNSTR=${MDBCONNSTR}" -e "MASTERENCKEYASBASE64=${MASTERENCKEYASBASE64}" -e "AUTH0DOMAIN=${AUTH0DOMAIN}" -e "AUTH0CLIENTID=${AUTH0CLIENTID}" --restart unless-stopped graboskyc/shepherd:${abbrvhash}
 
     echo
     echo "+================================"
