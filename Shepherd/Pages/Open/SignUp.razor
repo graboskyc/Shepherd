@@ -96,7 +96,10 @@
     }
 
     private async Task Refresh() {
-        FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
+        var builder = Builders<HerdingList>.Filter;
+        var filter = builder.Empty;
+        filter &= builder.Eq("_id", new ObjectId(Id));
+        filter &= builder.Eq("isPublished", true);
         var hls = await HLCollection.Find(filter).ToListAsync();
         hl = hls.FirstOrDefault();
     }
@@ -112,8 +115,11 @@
 
     private async Task Signup() {
         isSigningUp = true;
-        FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
-
+        var builder = Builders<HerdingList>.Filter;
+        var filter = builder.Empty;
+        filter &= builder.Eq("_id", new ObjectId(Id));
+        filter &= builder.Eq("isPublished", true);
+        
         var update = Builders<HerdingList>.Update.Push("slots.$[s].signups", signup);
         var arrayFilter = new[] {
             new BsonDocumentArrayFilterDefinition<BsonDocument> (
