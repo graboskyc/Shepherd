@@ -1,0 +1,19 @@
+#Lines, #Start { 
+    transition: all 1s ease;
+}
+
+#Start {
+    opacity: 0;
+}
+
+svg:hover #Lines { 
+    transform: translateY(5%);
+}
+
+svg:hover #Start { 
+    opacity: 1;
+}
+
+div {
+    text-align: center;
+}

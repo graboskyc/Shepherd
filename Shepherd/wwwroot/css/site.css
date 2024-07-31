@@ -26,3 +26,16 @@
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+body {
+    background-color: #647687 !important;
+    min-height: 100vh !important;
+}
+
+article header {
+    background-color: #FFDE73 !important;
+}
+
+nav li a {
+    color: #FFDE73 !important;
+}
