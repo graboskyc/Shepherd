@@ -21,12 +21,6 @@ builder.Services
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
-
 static void ConfigureMDBServices(IServiceCollection services)
 {
     
@@ -69,7 +63,9 @@ if (!app.Environment.IsDevelopment()) {
     app.UseHsts();
 }
 
-app.UseForwardedHeaders();
+app.UseForwardedHeaders(new ForwardedHeadersOptions {
+  ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection();
 
