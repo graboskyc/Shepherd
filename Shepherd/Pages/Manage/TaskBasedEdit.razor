@@ -97,21 +97,27 @@
         UI.Name = state?.User?.Identity?.Name ?? string.Empty;
         UI.Email = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         UI.UserId = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if(string.IsNullOrEmpty(Id)) {
+          hl = new HerdingList();
+          hl.Id = ObjectId.GenerateNewId();
+          hl.OwnedBy = UI.UserId;
+          hl.Name = UI.Name + " new task";
+          HLCollection.InsertOne(hl);
+          Navigation.NavigateTo("/Manage/TaskBasedEdit/"+hl.Id.ToString(),true);
+          Id = hl.Id.ToString();
+        } else {
+          var builder = Builders<HerdingList>.Filter;
+          var filter = builder.Empty;
+          filter &= builder.Eq("_id", new ObjectId(Id));
+          filter &= builder.Eq("ownedBy", UI.UserId);
+          var hls = await HLCollection.Find(filter).ToListAsync();
+          hl = hls.FirstOrDefault();
+        }
+
+
       }
 
-      if(string.IsNullOrEmpty(Id)) {
-        hl = new HerdingList();
-        hl.Id = ObjectId.GenerateNewId();
-        hl.OwnedBy = UI.UserId;
-        hl.Name = UI.Name + " new task";
-        HLCollection.InsertOne(hl);
-        Navigation.NavigateTo("/Manage/TaskBasedEdit/"+hl.Id.ToString(),true);
-        Id = hl.Id.ToString();
-      } else {
-        FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
-        var hls = await HLCollection.Find(filter).ToListAsync();
-        hl = hls.FirstOrDefault();
-      }
     }
 
     private async Task Submit() {

@@ -1,0 +1,89 @@
+﻿@page "/Manage/Report/{Id}"
+@using System.Security.Claims;
+@using MongoDB.Bson;
+@using MongoDB.Driver;
+@using Shepherd.Data;
+@inject IMongoCollection<HerdingList> HLCollection;
+@using Microsoft.FluentUI.AspNetCore.Components;
+@using EdenForge.Blazor.Components;
+
+<PageTitle>Report - Codename Shepherd</PageTitle>
+
+<AuthorizeView Context="Auth">
+    <Authorized>   
+      @if(hl != null) {
+        <h1>@hl.Name</h1>
+        <h2><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</h2>
+        <h2><FluentIcon Value="@(new Icons.Regular.Size20.Location())" /> @hl.Location</h2>
+        <p><FluentIcon Value="@(new Icons.Regular.Size20.SlideText())" /> <i>@hl.Description</i></p>
+        <p><CSVDownload Class="" Data="@hl.AsCSV" Description="Download" FileName="@String.Format("{0}.csv", hl.Name)" /></p>
+
+        <article>
+        <header>Signup Slots</header>
+
+            <table>
+                <thead>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Who</th>
+                </thead>
+                <tbody>
+                    @foreach(var slot in hl.Slots) {
+                        <tr>
+                            <td>@slot.Name</td>
+                            <td>
+                                <span>@slot.SignUps.Count</span>
+                                <span> / </span>
+                                <span>@slot.Quantity</span>
+                            </td>
+                            <td>
+                              <ul>
+                                @foreach(var signup in slot.SignUps) {
+                                  <li>@signup.WhoName - @signup.WhoEmail</li>
+                                }
+                              </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </article>
+      } else {
+        <span aria-busy="true">Loading...</span>
+      }
+    </Authorized>
+    <NotAuthorized>
+        <h1>Codename Shepherd</h1>
+
+        <p>You must sign in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+    [Parameter]
+    public string Id {get;set;} = null;
+    private UserInfo UI = new UserInfo();
+    private HerdingList hl = null;
+    private List<Shepherd.Data.CSVDownload> csv = new List<Shepherd.Data.CSVDownload>(); 
+
+    protected override async Task OnInitializedAsync()  {
+
+      if (authenticationState is not null) {
+        var state = await authenticationState;
+        UI.Name = state?.User?.Identity?.Name ?? string.Empty;
+        UI.Email = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        UI.UserId = state?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        var builder = Builders<HerdingList>.Filter;
+        var filter = builder.Empty;
+        filter &= builder.Eq("_id", new ObjectId(Id));
+        filter &= builder.Eq("ownedBy", UI.UserId);
+        var hls = await HLCollection.Find(filter).ToListAsync();
+        hl = hls.FirstOrDefault();
+
+      }
+      
+    }
+}

@@ -26,7 +26,11 @@
                 } else {
                   <p><FluentIcon Value="@(new Icons.Regular.Size20.BorderNone())" /> unpublished</p>
                 }
-                <p><a role="button" class="outline" href="/Manage/TaskBasedEdit/@hl.Id.ToString()">Edit</a></p>
+                <p>
+                  <a role="button" class="outline" href="/Manage/TaskBasedEdit/@hl.Id.ToString()">Edit</a>
+                  &nbsp;
+                  <a role="button" class="outline" href="/Manage/Report/@hl.Id.ToString()">Report</a>
+                </p>
               </article>
             }
         }

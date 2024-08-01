@@ -35,5 +35,29 @@ namespace Shepherd.Data {
 
         [BsonElement("slots")]
         public List<HerdingListSlot> Slots {get;set;} = new List<HerdingListSlot>();
+
+        public List<CSVDownload> AsCSV {get {
+            List<CSVDownload> csv = new List<CSVDownload>();
+            foreach(var slot in Slots) {
+                int i = 0;
+                while(i < slot.Quantity) {
+                    
+                    CSVDownload suAsCSV = new CSVDownload();
+
+                    if(slot.SignUps.ElementAtOrDefault(i) != null) {
+                        suAsCSV.SlotName = slot.Name;
+                        suAsCSV.Quantity = (i+1).ToString() + " of "+slot.Quantity.ToString();
+                        suAsCSV.SignupName = slot.SignUps[i].WhoName;
+                        suAsCSV.SignupEmail = slot.SignUps[i].WhoEmail;
+                    } else {
+                        suAsCSV.SlotName = slot.Name;
+                        suAsCSV.Quantity = (i+1).ToString() + "/"+slot.Quantity.ToString();
+                    }
+                    csv.Add(suAsCSV);
+                    i = i + 1;
+                }
+            }
+            return csv;
+        }}
     }
 }
