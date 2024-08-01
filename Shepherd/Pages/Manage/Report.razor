@@ -16,37 +16,42 @@
         <h2><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</h2>
         <h2><FluentIcon Value="@(new Icons.Regular.Size20.Location())" /> @hl.Location</h2>
         <p><FluentIcon Value="@(new Icons.Regular.Size20.SlideText())" /> <i>@hl.Description</i></p>
-        <p><CSVDownload Class="" Data="@hl.AsCSV" Description="Download" FileName="@String.Format("{0}.csv", hl.Name)" /></p>
 
         <article>
-        <header>Signup Slots</header>
-
-            <table>
-                <thead>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>Who</th>
-                </thead>
-                <tbody>
-                    @foreach(var slot in hl.Slots) {
-                        <tr>
-                            <td>@slot.Name</td>
-                            <td>
-                                <span>@slot.SignUps.Count</span>
-                                <span> / </span>
-                                <span>@slot.Quantity</span>
-                            </td>
-                            <td>
-                              <ul>
-                                @foreach(var signup in slot.SignUps) {
-                                  <li>@signup.WhoName - @signup.WhoEmail</li>
-                                }
-                              </ul>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+          <header style="overflow: auto;">
+              <p style="float: left;">Signup Slots</p>
+              <CSVDownload 
+                Class="generic-float-right generic-small-button" 
+                Data="@hl.AsCSV" 
+                Description="Download Report as CSV" 
+                FileName="@String.Format("{0}.csv", hl.Name)" />
+          </header>
+          <table>
+              <thead>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Who</th>
+              </thead>
+              <tbody>
+                  @foreach(var slot in hl.Slots) {
+                      <tr>
+                          <td>@slot.Name</td>
+                          <td>
+                              <span>@slot.SignUps.Count</span>
+                              <span> / </span>
+                              <span>@slot.Quantity</span>
+                          </td>
+                          <td>
+                            <ul>
+                              @foreach(var signup in slot.SignUps) {
+                                <li>@signup.WhoName - @signup.WhoEmail</li>
+                              }
+                            </ul>
+                          </td>
+                      </tr>
+                  }
+              </tbody>
+          </table>
         </article>
       } else {
         <span aria-busy="true">Loading...</span>

@@ -39,3 +39,11 @@ article header {
 nav li a {
     color: #FFDE73 !important;
 }
+
+.generic-float-right {
+    float:right;
+}
+
+.generic-small-button {
+    font-size:10px;
+}
