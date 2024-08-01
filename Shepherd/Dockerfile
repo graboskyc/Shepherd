@@ -1,10 +1,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /App
 ENV TZ="America/New_York"
+ENV DOTNET_EnableWriteXorExecute=0
 
 
 # Copy everything
 COPY ./ ./
+RUN rm -rf ./bin
+RUN rm -rf ./obj
 # Restore as distinct layers
 # RUN dotnet restore
 # Build and publish a release
