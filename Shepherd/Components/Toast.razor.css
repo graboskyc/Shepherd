@@ -1,0 +1,21 @@
+.toast {
+    position:fixed;
+    left:2rem;
+    bottom:2rem;
+    width:350px;
+    height:100px;
+    animation-name: fadeInOut;
+    animation-iteration-count: 1;
+    animation-duration: 5000ms;
+}
+
+.toast-msg {
+    
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0;}
+    25% {opacity: 1;}
+    75% { opacity: 1}
+    100% { opacity: 0;}
+}

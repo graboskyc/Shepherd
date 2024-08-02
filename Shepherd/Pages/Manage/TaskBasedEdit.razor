@@ -82,6 +82,8 @@
     </NotAuthorized>
 </AuthorizeView>
 
+<Toast Message="Saved!" Show=showToast />
+
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
@@ -89,6 +91,7 @@
     public string Id {get;set;} = null;
     private UserInfo UI = new UserInfo();
     private HerdingList hl = null;
+    private bool showToast = false;
 
     protected override async Task OnInitializedAsync()  {
 
@@ -124,6 +127,7 @@
       hl.ModifiedDT = DateTime.Now;
       FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("_id", new ObjectId(Id));
       await HLCollection.ReplaceOneAsync(filter, hl);
+      showToast = true;
     }
 
     private void AddSlot() {

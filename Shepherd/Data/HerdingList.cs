@@ -36,6 +36,22 @@ namespace Shepherd.Data {
         [BsonElement("slots")]
         public List<HerdingListSlot> Slots {get;set;} = new List<HerdingListSlot>();
 
+        public int TotalQuantities {get {
+            int i = 0;
+            foreach (var slot in Slots) {
+                i = i + slot.Quantity;
+            }
+            return i;
+        }}
+
+        public int TotalSignups {get {
+            int i = 0;
+            foreach (var slot in Slots) {
+                i = i + slot.SignUps.Count;
+            }
+            return i;
+        }}
+
         public List<CSVDownload> AsCSV {get {
             List<CSVDownload> csv = new List<CSVDownload>();
             foreach(var slot in Slots) {

@@ -19,8 +19,8 @@
                 <header></header>
                 <p><FluentIcon Value="@(new Icons.Regular.Size20.AnimalCat())" /> @hl.Name</p>
                 <p><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</p>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.AppsList())" /> @hl.Slots.Count items</p>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.People())" /> signups</p>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.AppsList())" /> @hl.Slots.Count slots with @hl.TotalQuantities total quantity</p>
+                <p><FluentIcon Value="@(new Icons.Regular.Size20.People())" /> @hl.TotalSignups signups</p>
                 @if(hl.IsPublished) {
                   <p><FluentIcon Value="@(new Icons.Regular.Size20.CheckboxChecked())" /> published</p>
                 } else {
