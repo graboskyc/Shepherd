@@ -105,7 +105,7 @@
           hl = new HerdingList();
           hl.Id = ObjectId.GenerateNewId();
           hl.OwnedBy = UI.UserId;
-          hl.Name = UI.Name + " new task";
+          hl.Name = UI.Name + " new event";
           HLCollection.InsertOne(hl);
           Navigation.NavigateTo("/Manage/TaskBasedEdit/"+hl.Id.ToString(),true);
           Id = hl.Id.ToString();
