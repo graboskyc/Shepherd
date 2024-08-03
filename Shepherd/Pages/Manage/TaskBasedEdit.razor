@@ -19,19 +19,21 @@
             <header>Basic Information</header>
 
             <label>Name</label>
-            <input type="text" @bind="hl.Name" />
+            <input type="text" @bind="hl.Name" disabled="@hl.IsPublished" />
 
-            <label>Description</label>
-            <InputTextArea @bind-Value="@hl.Description" rows="3"></InputTextArea>
+            @if(!hl.IsPublished) {
+              <label>Description</label>
+              <InputTextArea @bind-Value="@hl.Description" rows="3"></InputTextArea>
 
-            <label>Location</label>
-            <input type="text" @bind="hl.Location" />
+              <label>Location</label>
+              <input type="text" @bind="hl.Location" />
 
-            <label>Event Date and Time</label>
-            <input type="datetime-local" name="datetime-local" aria-label="Datetime local" @bind="hl.EventDT">
+              <label>Event Date and Time</label>
+              <input type="datetime-local" name="datetime-local" aria-label="Datetime local" @bind="hl.EventDT">
 
-            <label>Stop Accepting Startups</label>
-            <input type="datetime-local" name="datetime-local" aria-label="Datetime local" @bind="hl.EndSignupsDT">
+              <label>Stop Accepting Startups</label>
+              <input type="datetime-local" name="datetime-local" aria-label="Datetime local" @bind="hl.EndSignupsDT">
+            }
 
             <label>
               <input @bind="@hl.IsPublished" type="checkbox" role="switch" />
@@ -42,7 +44,7 @@
           <article>
             <header>Slots</header>
 
-            @if(hl.IsPublished) {
+            @if(!hl.IsPublished) {
 
               @foreach(var slot in hl.Slots) {
                 <article>

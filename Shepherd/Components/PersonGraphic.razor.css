@@ -1,0 +1,23 @@
+#Start, #LPerson, #RPerson { 
+    transition: all 1s ease;
+}
+
+#Start {
+    opacity: 0;
+}
+
+svg:hover #Start { 
+    opacity: 1;
+}
+
+svg:hover #LPerson {
+    transform: translateX(-5%);
+}
+
+svg:hover #RPerson {
+    transform: translateX(5%);
+}
+
+div {
+    text-align: center;
+}
