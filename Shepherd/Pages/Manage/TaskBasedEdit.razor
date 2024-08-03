@@ -42,27 +42,32 @@
           <article>
             <header>Slots</header>
 
-            @foreach(var slot in hl.Slots) {
-              <article>
-                <header></header>
+            @if(hl.IsPublished) {
 
-                <label>Name</label>
-                <input type="text" @bind="slot.Name" />
+              @foreach(var slot in hl.Slots) {
+                <article>
+                  <header></header>
 
-                <label>Quantity</label>
-                <input @bind="slot.Quantity" type="number" name="number" placeholder="Number" aria-label="Number">
-              
-                <footer>
-                  <button class="contrast" @onclick="(() => DelSlot(slot))">
-                    Delete Slot
-                  </button>
-                </footer>
-              </article>
+                  <label>Name</label>
+                  <input type="text" @bind="slot.Name" />
+
+                  <label>Quantity</label>
+                  <input @bind="slot.Quantity" type="number" name="number" placeholder="Number" aria-label="Number">
+                
+                  <footer>
+                    <button class="contrast" @onclick="(() => DelSlot(slot))">
+                      Delete Slot
+                    </button>
+                  </footer>
+                </article>
+              }
+
+              <footer>
+                <button @onclick="AddSlot">Add Slot</button>
+              </footer>
+            } else {
+              <p><i>You cannot edit slots while this is published.</i></p>
             }
-
-            <footer>
-              <button @onclick="AddSlot">Add Slot</button>
-            </footer>
           </article>
 
           <article>

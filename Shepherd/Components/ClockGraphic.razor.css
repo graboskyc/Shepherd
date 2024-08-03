@@ -1,4 +1,4 @@
-#Start { 
+#Start, #Minute { 
     transition: all 1s ease;
 }
 
@@ -6,9 +6,13 @@
     opacity: 0;
 }
 
-
 svg:hover #Start { 
     opacity: 1;
+}
+
+svg:hover #Minute {
+    transform: rotate(-85deg);
+    transform-origin: 50px 52px;
 }
 
 div {
