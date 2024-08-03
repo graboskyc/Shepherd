@@ -6,6 +6,7 @@
 @using Shepherd.Data;
 @inject IMongoCollection<HerdingList> HLCollection;
 @inject NavigationManager Navigation;
+@using Microsoft.FluentUI.AspNetCore.Components;
 
 <PageTitle>Task Based - Codename Shepherd</PageTitle>
 
@@ -89,7 +90,9 @@
     </NotAuthorized>
 </AuthorizeView>
 
-<Toast Message="Saved!" Show=showToast />
+<Toast Message="Saved!" Show=showToast>
+  <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.Info())" />
+</Toast>
 
 @code {
     [CascadingParameter]

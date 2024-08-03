@@ -6,6 +6,7 @@
 @inject IMongoCollection<HerdingList> HLCollection;
 @inject NavigationManager Navigation;
 @using Microsoft.FluentUI.AspNetCore.Components;
+@inject IJSRuntime JSRuntime;
 
 <PageTitle>Task Based - Codename Shepherd</PageTitle>
 
@@ -17,19 +18,29 @@
             @foreach(var hl in _hlList) {
               <article>
                 <header></header>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.AnimalCat())" /> @hl.Name</p>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</p>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.AppsList())" /> @hl.Slots.Count slots with @hl.TotalQuantities total quantity</p>
-                <p><FluentIcon Value="@(new Icons.Regular.Size20.People())" /> @hl.TotalSignups signups</p>
+                <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.AnimalCat())" /> @hl.Name</p>
+                <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.Calendar())" /> @hl.EventDT</p>
+                <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.AppsList())" /> @hl.Slots.Count slots with @hl.TotalQuantities total quantity</p>
+                <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.People())" /> @hl.TotalSignups signups</p>
                 @if(hl.IsPublished) {
-                  <p><FluentIcon Value="@(new Icons.Regular.Size20.CheckboxChecked())" /> published</p>
+                  <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.CheckboxChecked())" /> published</p>
                 } else {
-                  <p><FluentIcon Value="@(new Icons.Regular.Size20.BorderNone())" /> unpublished</p>
+                  <p><FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.BorderNone())" /> unpublished</p>
                 }
                 <p>
-                  <a role="button" class="outline" href="/Manage/TaskBasedEdit/@hl.Id.ToString()">Edit</a>
-                  &nbsp;
-                  <a role="button" class="outline" href="/Manage/Report/@hl.Id.ToString()">Report</a>
+                  <a role="button" class="outline" href="/Manage/TaskBasedEdit/@hl.Id.ToString()" data-tooltip="Edit">
+                    <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.Edit())" />
+                  </a>
+                  @if(hl.IsPublished) {
+                    <span>&nbsp;</span>
+                    <a role="button" class="outline" href="/Manage/Report/@hl.Id.ToString()" data-tooltip="Report">
+                      <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.ClipboardBulletList())" />
+                    </a>
+                    <span>&nbsp;</span>
+                    <button class="outline" data-tooltip="Copy to Clipboard" @onclick="(() => CopyToClip(hl.Id.ToString()))">
+                      <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.Copy())" />
+                    </button>
+                  }
                 </p>
               </article>
             }
@@ -42,11 +53,16 @@
     </NotAuthorized>
 </AuthorizeView>
 
+<Toast Message="Link Copied to Clipboard" Show=showToast>
+  <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.Copy())" />
+</Toast>
+
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
     private UserInfo UI = new UserInfo();
     private List<HerdingList> _hlList = null;
+    private bool showToast = false;
 
     protected override async Task OnInitializedAsync()  {
 
@@ -59,5 +75,10 @@
 
       FilterDefinition<HerdingList> filter = Builders<HerdingList>.Filter.Eq("ownedBy", UI.UserId);
       _hlList = await HLCollection.Find(filter).ToListAsync();
+    }
+
+    private async Task CopyToClip(string id) {
+      await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", "https://www.catshepherd.lol/SignUp/"+id);
+      showToast = true;
     }
 }

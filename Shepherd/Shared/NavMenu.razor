@@ -12,7 +12,7 @@
                 </li>
                 <li>
                     <NavLink href="/Account/Logout">
-                        Log Out @Username
+                        Log Out
                     </NavLink>
                 </li>
             </ul>
@@ -47,14 +47,4 @@
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
-    private string Username = "";
-
-    protected override async Task OnInitializedAsync()  {
-
-      if (authenticationState is not null) {
-        var state = await authenticationState;
-
-        Username = state?.User?.Identity?.Name ?? string.Empty;
-      }
-    }
 }
