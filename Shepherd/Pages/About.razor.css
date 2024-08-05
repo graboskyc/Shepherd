@@ -1,0 +1,9 @@
+details summary {
+    color: #FFDE73 !important;
+    font-weight: bold;
+}
+
+details[open]>summary:not([role]):not(:focus) {
+    color: #FFDE73;
+    font-weight: bold;
+}

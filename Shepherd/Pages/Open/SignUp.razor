@@ -22,7 +22,6 @@
         <table>
             <thead>
                 <th>Name</th>
-                <th>Quantity</th>
                 <th>Action</th>
             </thead>
             <tbody>
@@ -30,15 +29,23 @@
                     <tr>
                         <td>@slot.Name</td>
                         <td>
-                            <span>@slot.SignUps.Count</span>
-                            <span> / </span>
-                            <span>@slot.Quantity</span>
-                        </td>
-                        <td>
-                            @if(@slot.SignUps.Count < @slot.Quantity) {
-                                <button @onclick="(() =>OpenSignup(slot))">Signup</button>
+                            @if(DateTime.Now > hl.EndSignupsDT) {
+                                <i>Signups Ended</i>
+                            }
+                            else if(@slot.SignUps.Count < @slot.Quantity) {
+                                <button @onclick="(() =>OpenSignup(slot))">
+                                    <span>Sign Up</span>
+                                    <span>@slot.SignUps.Count</span>
+                                    <span> / </span>
+                                    <span>@slot.Quantity</span>
+                                </button>
                             } else {
-                                <span>Complete!</span>
+                                <div>
+                                    <span>Signups Full</span>
+                                    <span>@slot.SignUps.Count</span>
+                                    <span> / </span>
+                                    <span>@slot.Quantity</span>
+                                </div>
                             }
                         </td>
                     </tr>

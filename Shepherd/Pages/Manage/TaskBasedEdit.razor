@@ -54,7 +54,7 @@
                   <label>Name</label>
                   <input type="text" @bind="slot.Name" />
 
-                  <label>Quantity</label>
+                  <label data-tooltip="Number of participants">Quantity</label>
                   <input @bind="slot.Quantity" type="number" name="number" placeholder="Number" aria-label="Number">
                 
                   <footer>
@@ -69,7 +69,26 @@
                 <button @onclick="AddSlot">Add Slot</button>
               </footer>
             } else {
-              <p><i>You cannot edit slots while this is published.</i></p>
+              @foreach(var slot in hl.Slots) {
+                <article>
+                    <header>@slot.Name</header>
+
+                    <table>
+                      <thead>
+                        <th>Name</th>
+                        <th>Action</th>
+                      </thead>
+                      <tbody>
+                        @foreach(var su in slot.SignUps) {
+                          <tr>
+                            <td>@su.WhoName</td>
+                            <td><button @onclick="(() =>DelSignup(slot, su.WhoEmail))">Delete Signup</button></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                </article>
+              }
             }
           </article>
 
@@ -148,5 +167,15 @@
     private void DelSlot(HerdingListSlot s) {
       hl.Slots.RemoveAll(slot => slot.Id == s.Id);
       StateHasChanged();
+    }
+
+    private async Task DelSignup(HerdingListSlot s, string email) {
+      foreach(var slot in hl.Slots) {
+        if(slot.Id == s.Id) {
+          slot.SignUps.RemoveAll(su => su.WhoEmail == email);
+          StateHasChanged();
+        }
+      }
+      await Submit();
     }
 }
