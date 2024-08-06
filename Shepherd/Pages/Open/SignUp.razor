@@ -88,13 +88,17 @@
     }
 }
 
+<Toast Message="Thanks for signing up!" Show=showToast>
+  <FluentIcon Color="Color.Custom" CustomColor="#647687" Value="@(new Icons.Regular.Size20.CheckboxPerson())" />
+</Toast>
+
 
 @code {
     [Parameter]
     public string Id {get;set;} = null;
 
     private HerdingList hl = null;
-    private bool displayModal, isSigningUp = false;
+    private bool displayModal, isSigningUp, showToast = false;
     private SlotSignup signup = new SlotSignup();
     private HerdingListSlot selectedSlot = null;
 
@@ -137,6 +141,7 @@
         };
 
         await HLCollection.UpdateOneAsync(filter, update, new UpdateOptions{ArrayFilters = arrayFilter});
+        showToast = true;
         await Refresh();
         displayModal = false;
         isSigningUp = false;

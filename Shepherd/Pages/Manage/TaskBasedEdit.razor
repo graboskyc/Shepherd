@@ -7,6 +7,7 @@
 @inject IMongoCollection<HerdingList> HLCollection;
 @inject NavigationManager Navigation;
 @using Microsoft.FluentUI.AspNetCore.Components;
+@inject IJSRuntime JSRuntime;
 
 <PageTitle>Task Based - Codename Shepherd</PageTitle>
 
@@ -14,7 +15,14 @@
     <Authorized>   
       @if(hl != null) {
         <EditForm Model="hl">
-          <h1>Edit <i>@hl.Name</i></h1>
+          <h1>
+            <FluentIcon 
+              Color="Color.Custom" 
+              CustomColor="#647687" 
+              Value="@(new Icons.Regular.Size20.ArrowStepBack())" 
+              @onclick="GoBack" />
+            Edit <i>@hl.Name</i>
+          </h1>
 
           <article>
             <header>Basic Information</header>
@@ -177,5 +185,9 @@
         }
       }
       await Submit();
+    }
+
+    private async Task GoBack() {
+      await JSRuntime.InvokeVoidAsync("history.back");
     }
 }
